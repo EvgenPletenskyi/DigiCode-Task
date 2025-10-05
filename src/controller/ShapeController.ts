@@ -89,4 +89,12 @@ export class ShapeController {
             e.view.updateShapePosition();
         }
     }
+
+    getStats(): { count: number; area: number } {
+        let area = 0;
+        for (const e of this.active) {
+            area += e.view.getArea();
+        }
+        return { count: this.active.length, area };
+    }
 }

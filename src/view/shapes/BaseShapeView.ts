@@ -23,6 +23,10 @@ export abstract class BaseShapeView extends Container {
         this.setPosition(this.model.x, this.model.y);
     }
 
+    getArea(): number {
+        return 0;
+    }
+
     activate(): void {
         this.visible = true;
     }

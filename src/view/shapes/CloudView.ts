@@ -14,4 +14,13 @@ export class CloudView extends BaseShapeView {
         this.gfx.circle(R * 0.5, -R * 0.1, r3);
         this.gfx.circle(R * 0.1, R * 0.35, r4);
     }
+
+    getArea(): number {
+        const R = this.model.radius;
+        const r1 = R * 0.9,
+            r2 = R * 0.7,
+            r3 = R * 0.8,
+            r4 = R * 0.6;
+        return Math.PI * (r1 ** 2 + r2 ** 2 + r3 ** 2 + r4 ** 2);
+    }
 }

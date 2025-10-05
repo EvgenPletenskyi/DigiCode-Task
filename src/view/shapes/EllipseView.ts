@@ -7,4 +7,8 @@ export class EllipseView extends BaseShapeView {
 
         this.gfx.ellipse(0, 0, rx, ry);
     }
+
+    getArea(): number {
+        return 0;
+    }
 }

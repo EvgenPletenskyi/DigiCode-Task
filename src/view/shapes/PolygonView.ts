@@ -12,4 +12,10 @@ export class PolygonView extends BaseShapeView {
         }
         this.gfx.closePath();
     }
+
+    getArea(): number {
+        const n = this.model.sides ?? 3;
+        const R = this.model.radius;
+        return 0.5 * n * R * R * Math.sin((2 * Math.PI) / n);
+    }
 }

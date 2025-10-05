@@ -6,7 +6,38 @@
     <title>PIXI Test Task</title>
 </head>
 <body>
+<div class="hud">
+    <label>Shapes:
+        <input id="hud-count" type="text" readonly>
+    </label>
+    <label>Area (px²):
+        <input id="hud-area" type="text" readonly>
+    </label>
+</div>
+
 <div id="app"></div>
+
+<div class="controls">
+    <div class="control-group">
+        <label>Spawn/sec</label>
+        <div class="control-row">
+            <button id="spawn-dec">−</button>
+            <input id="spawn-value" type="text" readonly>
+            <button id="spawn-inc">+</button>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label>Gravity</label>
+        <div class="control-row">
+            <button id="gravity-dec">−</button>
+            <input id="gravity-value" type="text" readonly>
+            <button id="gravity-inc">+</button>
+        </div>
+    </div>
+</div>
+
 <script type='module' src='/main.ts'></script>
 </body>
+
 </html>
