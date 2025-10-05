@@ -1,13 +1,14 @@
+// src/controller/RootController.ts
+import type { Application } from "pixi.js";
 import type { ShapeController } from "@/controller/ShapeController";
 import type { RootModel } from "@/model/RootModel";
 
 export class RootController {
     private running = false;
-    private last = 0;
-
     private spawnAccumulator = 0;
 
     constructor(
+        private app: Application,
         private shapes: ShapeController,
         private model: RootModel,
     ) {}
@@ -15,35 +16,18 @@ export class RootController {
     start() {
         if (this.running) return;
         this.running = true;
-        this.last = performance.now();
-        this.loop();
+        this.app.ticker.add(this.onTick);
     }
 
-    stop() {
-        this.running = false;
-    }
-
-    private loop = () => {
-        if (!this.running) return;
-
-        const now = performance.now();
-        const dtMs = now - this.last;
-        const dt = dtMs / 1000; // у секундах
-        this.last = now;
-
-        this.shapes.update(dtMs);
+    private onTick = (ticker: any) => {
+        const dt = ticker.deltaMS / 1000;
+        this.shapes.update(dt);
 
         this.spawnAccumulator += dt * this.model.spawnPerSecond;
+
         while (this.spawnAccumulator >= 1) {
-            this.shapes.addShape(this.pickType());
+            this.shapes.addShape();
             this.spawnAccumulator -= 1;
         }
-
-        requestAnimationFrame(this.loop);
     };
-
-    private pickType(): "circle" | "triangle" | "hexagon" {
-        const bag = ["circle", "triangle", "hexagon"] as const;
-        return bag[(Math.random() * bag.length) | 0];
-    }
 }

@@ -28,9 +28,8 @@ export class App {
         viewport.init();
 
         const shapes = new ShapeController(app, model);
-        // shapes.addMany(5);
 
-        const root = new RootController(shapes, model);
-        // root.start();
+        const root = new RootController(app, shapes, model);
+        root.start();
     }
 }
