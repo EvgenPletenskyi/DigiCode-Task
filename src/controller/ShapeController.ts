@@ -3,16 +3,23 @@ import type { RootModel } from "@/model/RootModel";
 import { ShapeFactory, type ShapeEntity } from "@/factory/ShapeFactory";
 import { ShapeModelUtils, type ShapeKey } from "@/model/ShapeModel";
 import { ShapePool } from "@/pool/ShapePool";
+import { EventEmitter } from "@/app/EventEmitter";
 
 export class ShapeController {
     private factory = new ShapeFactory();
     private pool = new ShapePool();
     private active: ShapeEntity[] = [];
 
+    readonly onStatsChanged = new EventEmitter<{ count: number; area: number }>();
+
     constructor(
         private app: Application,
         private model: RootModel,
     ) {}
+
+    private emitStats(): void {
+        this.onStatsChanged.emit(this.getStats());
+    }
 
     private wireInteractions(e: ShapeEntity): void {
         e.view.off("pointertap");
@@ -34,6 +41,7 @@ export class ShapeController {
                 e.view.refreshAppearance();
             }
         }
+        this.emitStats();
     }
 
     addShape(type?: ShapeKey): void {
@@ -70,24 +78,31 @@ export class ShapeController {
         this.wireInteractions(e);
         this.active.push(e);
         this.app.stage.addChild(e.view);
+
+        this.emitStats();
     }
 
     update(dt: number): void {
-        const g = this.model.gravity;
-        const H = this.model.baseHeight;
+        // const g = this.model.gravity;
+        // const H = this.model.baseHeight;
+
+        let changed = false;
 
         for (let i = this.active.length - 1; i >= 0; i--) {
             const e = this.active[i];
-            e.model.y += g * dt;
+            e.model.y += this.model.gravity * dt;
 
-            if (e.model.y - e.model.radius > H) {
+            if (e.model.y - e.model.radius > this.model.baseHeight) {
                 this.active.splice(i, 1);
                 e.model.onScreen = false;
                 this.pool.recycle(e);
+                changed = true;
                 continue;
             }
             e.view.updateShapePosition();
         }
+
+        if (changed) this.emitStats();
     }
 
     getStats(): { count: number; area: number } {

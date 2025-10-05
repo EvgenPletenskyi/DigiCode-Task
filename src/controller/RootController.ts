@@ -1,4 +1,3 @@
-// src/controller/RootController.ts
 import type { Application } from "pixi.js";
 import type { ShapeController } from "@/controller/ShapeController";
 import type { RootModel } from "@/model/RootModel";
@@ -12,9 +11,10 @@ export class RootController {
     constructor(
         private app: Application,
         private shapes: ShapeController,
-        private model: RootModel,
+        public readonly model: RootModel,
     ) {
-        this.hud = new HudView(document); // або передай mount, якщо треба
+        this.hud = new HudView(document);
+        this.hud.bind(this.model, this.shapes);
     }
 
     start() {
@@ -32,18 +32,12 @@ export class RootController {
     private onTick = (ticker: any) => {
         const dt = (ticker.deltaMS ?? 16.6667) / 1000;
 
-        // фізика
         this.shapes.update(dt);
 
-        // спавн
         this.spawnAccumulator += dt * this.model.spawnPerSecond;
         while (this.spawnAccumulator >= 1) {
             this.shapes.addShape();
             this.spawnAccumulator -= 1;
         }
-
-        // HUD
-        const { count, area } = this.shapes.getStats();
-        this.hud.update(count, area);
     };
 }

@@ -1,3 +1,5 @@
+import { EventEmitter } from "@/app/EventEmitter";
+
 export class RootModel {
     baseWidth = 960;
     baseHeight = 540;
@@ -11,6 +13,19 @@ export class RootModel {
 
     gravity = 100;
     spawnPerSecond = 5;
+
+    readonly onGravityChanged = new EventEmitter<number>();
+    readonly onSpawnRateChanged = new EventEmitter<number>();
+
+    setGravity(value: number): void {
+        this.gravity = value;
+        this.onGravityChanged.emit(value);
+    }
+
+    setSpawnRate(value: number): void {
+        this.spawnPerSecond = value;
+        this.onSpawnRateChanged.emit(value);
+    }
 
     setScale(scale: number) {
         this.scale = scale;
