@@ -9,6 +9,9 @@ export abstract class BaseShapeView extends Container {
         this.addChild(this.gfx);
         this.refreshAppearance();
         this.setPosition(model.x, model.y);
+
+        this.eventMode = "static";
+        this.cursor = "pointer";
     }
 
     setPosition(x: number, y: number): void {

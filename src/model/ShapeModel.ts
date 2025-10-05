@@ -5,8 +5,8 @@ export const generateShapeId = () => ++shapeIdCounter;
 
 export interface IShapeModel {
     id: number;
-    // для сумісності можна тримати type, але фабрика працює з ShapeKey
-    type: string;
+
+    type: ShapeKey;
 
     x: number;
     y: number;

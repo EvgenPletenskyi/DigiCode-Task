@@ -24,6 +24,8 @@ export class App {
         const view = new RootView(app, mount, model);
         view.init();
 
+        app.stage.eventMode = "static";
+
         const viewport = new ViewportController(app, view, model);
         viewport.init();
 
