@@ -1,14 +1,14 @@
 import { Application } from "pixi.js";
 import type { RootModel } from "@/model/RootModel";
-import { ShapeFactory, type ShapeEntity } from "@/factory/ShapeFactory";
+import { ShapeFactory, type IShapeView } from "@/utils/ShapeFactory";
 import { ShapeModelUtils, type ShapeKey } from "@/model/ShapeModel";
-import { ShapePool } from "@/pool/ShapePool";
-import { eventBus } from "@/app/EventEmitter";
+import { ShapePool } from "@/utils/ShapePool";
+import { eventBus } from "@/utils/EventEmitter";
 
 export class ShapeController {
     private factory = new ShapeFactory();
     private pool = new ShapePool();
-    private active: ShapeEntity[] = [];
+    private active: IShapeView[] = [];
 
     constructor(
         private app: Application,
@@ -19,16 +19,22 @@ export class ShapeController {
         eventBus.emit("shapes:statsChanged", this.getStats());
     }
 
-    private wireInteractions(e: ShapeEntity): void {
+    private wireInteractions(e: IShapeView): void {
         e.view.off("pointertap");
         e.view.on("pointertap", () => this.onShapeClicked(e));
     }
 
-    private onShapeClicked(target: ShapeEntity): void {
+    private onShapeClicked(target: IShapeView): void {
         const type = target.model.type;
         const idx = this.active.indexOf(target);
+
         if (idx !== -1) {
             this.active.splice(idx, 1);
+
+            target.model.y = this.model.baseHeight + target.model.radius;
+            target.view.setPosition(target.model.x, target.model.y);
+            target.model.active = false;
+
             this.pool.recycle(target);
         }
 
@@ -38,6 +44,7 @@ export class ShapeController {
                 e.view.refreshAppearance();
             }
         }
+
         this.emitStats();
     }
 
@@ -57,24 +64,27 @@ export class ShapeController {
 
     addShapeAt(x: number, y: number): void {
         const type = this.factory.pickRandomType();
-        const e = this.obtainOrCreate(type);
-        this.finalizeShape(e, x, y);
+        const s = this.obtainOrCreate(type);
+        this.finalizeShape(s, x, y);
     }
 
-    private obtainOrCreate(type: ShapeKey): ShapeEntity {
-        const e = this.pool.tryObtain(type) ?? this.factory.create(type);
-        e.model.radius = ShapeModelUtils.getRandomRadius();
-        e.model.color = ShapeModelUtils.getRandomColor();
+    private obtainOrCreate(type: ShapeKey): IShapeView {
+        const s = this.pool.tryObtain() ?? this.factory.create(type);
 
-        if (e.model.type === "ellipse") {
+        s.model.radius = ShapeModelUtils.getRandomRadius();
+        s.model.color = ShapeModelUtils.getRandomColor();
+        s.model.active = true;
+
+        if (s.model.type === "ellipse") {
             const ratio = 0.6 + Math.random() * 0.6;
-            e.model.ry = Math.max(1, Math.round(e.model.radius * ratio));
+            s.model.ry = Math.max(1, Math.round(s.model.radius * ratio));
         }
 
-        return e;
+        s.view.visible = true;
+        return s;
     }
 
-    private finalizeShape(e: ShapeEntity, x: number, y: number): void {
+    private finalizeShape(e: IShapeView, x: number, y: number): void {
         e.model.x = x;
         e.model.y = y;
 
@@ -95,7 +105,7 @@ export class ShapeController {
             const e = this.active[i];
             e.model.y += this.model.gravity * dt;
 
-            if (e.model.y - e.model.radius > this.model.baseHeight) {
+            if (e.model.y - e.model.radius > this.model.baseHeight + e.model.radius) {
                 this.active.splice(i, 1);
                 this.pool.recycle(e);
                 changed = true;

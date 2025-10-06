@@ -5,7 +5,7 @@ import { EllipseView } from "@/view/shapes/EllipseView";
 import { PolygonView } from "@/view/shapes/PolygonView";
 import { CloudView } from "@/view/shapes/CloudView";
 
-export interface ShapeEntity {
+export interface IShapeView {
     model: IShapeModel;
     view: BaseShapeView;
 }
@@ -23,13 +23,14 @@ export class ShapeFactory {
         random: CloudView,
     };
 
-    create(type: ShapeKey, radius?: number, color?: number): ShapeEntity {
+    create(type: ShapeKey, radius?: number, color?: number): IShapeView {
         const finalRadius = radius ?? ShapeModelUtils.getRandomRadius();
         const finalColor = color ?? ShapeModelUtils.getRandomColor();
 
         const model: IShapeModel = {
             id: generateShapeId(),
             type,
+            active: true,
             x: 0,
             y: 0,
             radius: finalRadius,

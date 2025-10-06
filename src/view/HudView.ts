@@ -1,6 +1,6 @@
 import type { RootModel } from "@/model/RootModel";
 import type { ShapeController } from "@/controller/ShapeController";
-import { eventBus } from "@/app/EventEmitter";
+import { eventBus } from "@/utils/EventEmitter";
 
 export class HudView {
     private root: HTMLElement;

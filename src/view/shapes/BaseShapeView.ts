@@ -23,10 +23,6 @@ export abstract class BaseShapeView extends Container {
         this.setPosition(this.model.x, this.model.y);
     }
 
-    getArea(): number {
-        return 0;
-    }
-
     refreshAppearance(): void {
         const color = this.model.color;
         this.gfx.clear();
@@ -35,4 +31,5 @@ export abstract class BaseShapeView extends Container {
     }
 
     protected abstract draw(): void;
+    public abstract getArea(): number;
 }

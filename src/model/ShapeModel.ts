@@ -7,6 +7,8 @@ export interface IShapeModel {
     id: number;
     type: ShapeKey;
 
+    active: boolean;
+
     x: number;
     y: number;
 

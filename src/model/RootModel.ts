@@ -1,4 +1,4 @@
-import { eventBus } from "@/app/EventEmitter";
+import { eventBus } from "@/utils/EventEmitter";
 
 export class RootModel {
     baseWidth = 960;

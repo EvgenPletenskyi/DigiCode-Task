@@ -2,7 +2,7 @@ import type { Application } from "pixi.js";
 import type { ShapeController } from "@/controller/ShapeController";
 import type { RootModel } from "@/model/RootModel";
 import { HudView } from "@/view/HudView";
-import { eventBus } from "@/app/EventEmitter";
+import { eventBus } from "@/utils/EventEmitter";
 
 export class RootController {
     private spawnAccumulator = 0;
