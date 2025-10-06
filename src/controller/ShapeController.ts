@@ -20,8 +20,8 @@ export class ShapeController {
     }
 
     private wireInteractions(e: IShapeView): void {
-        e.view.off("pointertap");
-        e.view.on("pointertap", () => this.onShapeClicked(e));
+        e.view.off("pointerdown");
+        e.view.on("pointerdown", () => this.onShapeClicked(e));
     }
 
     private onShapeClicked(target: IShapeView): void {

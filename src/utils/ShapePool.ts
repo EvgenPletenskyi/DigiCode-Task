@@ -8,7 +8,7 @@ export class ShapePool {
     }
 
     recycle(e: IShapeView): void {
-        e.view.off("pointertap");
+        e.view.off("pointerdown");
         e.model.active = false;
 
         if (!this.pool.includes(e)) {
