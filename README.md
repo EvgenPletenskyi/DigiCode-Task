@@ -28,3 +28,5 @@
    ```bash
    npm run preview
    ```
+   ## 📸 Screenshots
+![Main](docs/main.png)
