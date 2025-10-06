@@ -37,7 +37,7 @@ export class HudView {
         this.gravityEl.value = model.gravity.toFixed(1);
         this.spawnEl.value = model.spawnPerSecond.toFixed(1);
 
-        this.gravityDecBtn.onclick = () => model.setGravity(Math.max(0, model.gravity - 10));
+        this.gravityDecBtn.onclick = () => model.setGravity(Math.max(50, model.gravity - 10));
         this.gravityIncBtn.onclick = () => model.setGravity(model.gravity + 10);
         this.spawnDecBtn.onclick = () => model.setSpawnRate(Math.max(0, model.spawnPerSecond - 1));
         this.spawnIncBtn.onclick = () => model.setSpawnRate(model.spawnPerSecond + 1);

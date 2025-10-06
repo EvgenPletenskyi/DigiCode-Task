@@ -12,14 +12,16 @@ export class RootModel {
     cssHeight = this.baseHeight;
 
     gravity = 100;
+    maxGravity = 500;
     spawnPerSecond = 5;
 
     readonly onGravityChanged = new EventEmitter<number>();
     readonly onSpawnRateChanged = new EventEmitter<number>();
 
     setGravity(value: number): void {
-        this.gravity = value;
-        this.onGravityChanged.emit(value);
+        const clamped = Math.min(this.maxGravity, Math.max(0, value));
+        this.gravity = clamped;
+        this.onGravityChanged.emit(clamped);
     }
 
     setSpawnRate(value: number): void {
