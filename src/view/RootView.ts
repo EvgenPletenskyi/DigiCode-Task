@@ -24,8 +24,4 @@ export class RootView {
             margin: "20px auto",
         } as CSSStyleDeclaration);
     }
-
-    dispose(): void {
-        this.app.destroy(true, { children: true });
-    }
 }

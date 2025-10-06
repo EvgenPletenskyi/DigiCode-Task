@@ -34,7 +34,6 @@ export class HudView {
         model.onSpawnRateChanged.on((v) => (this.spawnEl.value = v.toFixed(1)));
         shapes.onStatsChanged.on(({ count, area }) => this.update(count, area));
 
-        // 🔥 Ініціалізуємо значення одразу
         this.gravityEl.value = model.gravity.toFixed(1);
         this.spawnEl.value = model.spawnPerSecond.toFixed(1);
 

@@ -27,23 +27,10 @@ export abstract class BaseShapeView extends Container {
         return 0;
     }
 
-    activate(): void {
-        this.visible = true;
-    }
-    detach(): void {
-        this.visible = false;
-        this.removeFromParent();
-    }
-    dispose(): void {
-        this.removeFromParent();
-        this.destroy({ children: true });
-    }
-
-    /** Малюємо path у draw(), а потім застосовуємо стилі */
     refreshAppearance(): void {
-        const color = this.model.color ?? 0xff00ff;
+        const color = this.model.color;
         this.gfx.clear();
-        this.draw(); // сформували path
+        this.draw();
         this.gfx.fill({ color });
     }
 

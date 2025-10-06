@@ -35,13 +35,13 @@ export class ShapeFactory {
             radius: finalRadius,
             color: finalColor,
             onScreen: false,
-            spawnOffset: 12,
+            spawnOffset: 0,
         };
 
         if (type.startsWith("poly")) {
-            model.sides = Number(type.replace("poly", "")) || 3;
+            model.sides = Number(type.replace("poly", ""));
         } else if (type === "ellipse") {
-            const ratio = 0.6 + Math.random() * 0.6;
+            const ratio = 0.6 + Math.random() * 0.2;
             model.ry = Math.max(1, Math.round(model.radius * ratio));
         }
 

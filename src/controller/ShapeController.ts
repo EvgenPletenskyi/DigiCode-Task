@@ -109,9 +109,6 @@ export class ShapeController {
     }
 
     update(dt: number): void {
-        // const g = this.model.gravity;
-        // const H = this.model.baseHeight;
-
         let changed = false;
 
         for (let i = this.active.length - 1; i >= 0; i--) {

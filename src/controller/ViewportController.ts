@@ -18,10 +18,6 @@ export class ViewportController {
         this.applyScale();
     }
 
-    dispose(): void {
-        window.removeEventListener("resize", this.onResize);
-    }
-
     private applyScale(): void {
         const vw = window.innerWidth;
         const vh = window.innerHeight;

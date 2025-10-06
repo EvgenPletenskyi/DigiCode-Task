@@ -1,6 +1,5 @@
 import { BaseShapeView } from "./BaseShapeView";
 
-/** Проста «хмаринка»: кілька кіл різного радіуса в одному path */
 export class CloudView extends BaseShapeView {
     protected draw(): void {
         const R = this.model.radius;
