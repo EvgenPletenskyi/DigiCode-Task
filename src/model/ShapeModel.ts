@@ -5,23 +5,17 @@ export const generateShapeId = () => ++shapeIdCounter;
 
 export interface IShapeModel {
     id: number;
-
     type: ShapeKey;
 
     x: number;
     y: number;
 
-    /** базовий радіус (для кола/багатокутника/еліпса як rx) */
     radius: number;
-
-    /** для полігонів: кількість сторін */
     sides?: number;
 
-    /** для еліпса: вертикальний радіус */
     ry?: number;
 
     color: number;
-    onScreen?: boolean;
     spawnOffset?: number;
 }
 
@@ -37,8 +31,9 @@ export class ShapeModelUtils {
     }
 
     static getRandomColor(): number {
-        // приємна палітра, добре видно на темному фоні
-        const palette = [0xff595e, 0xffca3a, 0x8ac926, 0x1982c4, 0x6a4c93];
-        return palette[(Math.random() * palette.length) | 0];
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+        return (r << 16) + (g << 8) + b;
     }
 }

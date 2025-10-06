@@ -16,6 +16,7 @@ export class ShapePool {
     recycle(e: ShapeEntity): void {
         e.view.off("pointertap");
         e.view.removeFromParent();
+
         this.bucket(e.model.type).push(e);
     }
 }

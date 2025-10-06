@@ -21,7 +21,8 @@ export class App {
 
         app.stage.eventMode = "static";
 
-        globalThis.__PIXI_APP__ = app;
+        //  DEV PIXI  //
+        // globalThis.__PIXI_APP__ = app;
 
         const view = new RootView(app, mount, model);
         view.init();

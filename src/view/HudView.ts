@@ -1,5 +1,6 @@
 import type { RootModel } from "@/model/RootModel";
 import type { ShapeController } from "@/controller/ShapeController";
+import { eventBus } from "@/app/EventEmitter";
 
 export class HudView {
     private root: HTMLElement;
@@ -11,17 +12,27 @@ export class HudView {
     private gravityIncBtn: HTMLButtonElement;
     private spawnDecBtn: HTMLButtonElement;
     private spawnIncBtn: HTMLButtonElement;
+    private unsubscribe: Array<() => void> = [];
+    private gravityValue = 0;
+    private spawnValue = 0;
 
     constructor(root: HTMLElement | Document = document) {
         this.root = root.querySelector<HTMLElement>(".hud")!;
-        this.countEl = this.root.querySelector("#hud-count") as HTMLInputElement;
-        this.areaEl = this.root.querySelector("#hud-area") as HTMLInputElement;
-        this.gravityEl = document.getElementById("gravity-value") as HTMLInputElement;
-        this.spawnEl = document.getElementById("spawn-value") as HTMLInputElement;
-        this.gravityDecBtn = document.getElementById("gravity-dec") as HTMLButtonElement;
-        this.gravityIncBtn = document.getElementById("gravity-inc") as HTMLButtonElement;
-        this.spawnDecBtn = document.getElementById("spawn-dec") as HTMLButtonElement;
-        this.spawnIncBtn = document.getElementById("spawn-inc") as HTMLButtonElement;
+        this.countEl = this.root.querySelector<HTMLInputElement>("#hud-count")!;
+        this.areaEl = this.root.querySelector<HTMLInputElement>("#hud-area")!;
+        this.gravityEl = document.querySelector<HTMLInputElement>("#gravity-value")!;
+        this.spawnEl = document.querySelector<HTMLInputElement>("#spawn-value")!;
+        this.gravityDecBtn = document.querySelector<HTMLButtonElement>("#gravity-dec")!;
+        this.gravityIncBtn = document.querySelector<HTMLButtonElement>("#gravity-inc")!;
+        this.spawnDecBtn = document.querySelector<HTMLButtonElement>("#spawn-dec")!;
+        this.spawnIncBtn = document.querySelector<HTMLButtonElement>("#spawn-inc")!;
+    }
+
+    private disposeSubscriptions(): void {
+        for (const dispose of this.unsubscribe) {
+            dispose();
+        }
+        this.unsubscribe = [];
     }
 
     update(count: number, areaPx2: number): void {
@@ -30,16 +41,35 @@ export class HudView {
     }
 
     bind(model: RootModel, shapes: ShapeController): void {
-        model.onGravityChanged.on((v) => (this.gravityEl.value = v.toFixed(0)));
-        model.onSpawnRateChanged.on((v) => (this.spawnEl.value = v.toFixed(1)));
-        shapes.onStatsChanged.on(({ count, area }) => this.update(count, area));
+        this.disposeSubscriptions();
 
-        this.gravityEl.value = model.gravity.toFixed(1);
-        this.spawnEl.value = model.spawnPerSecond.toFixed(1);
+        this.unsubscribe = [
+            eventBus.on("model:gravityChanged", (v) => {
+                this.gravityValue = v;
+                this.gravityEl.value = v.toFixed(0);
+            }),
+            eventBus.on("model:spawnRateChanged", (v) => {
+                this.spawnValue = v;
+                this.spawnEl.value = v.toFixed(1);
+            }),
+            eventBus.on("shapes:statsChanged", ({ count, area }) => this.update(count, area)),
+        ];
 
-        this.gravityDecBtn.onclick = () => model.setGravity(Math.max(50, model.gravity - 10));
-        this.gravityIncBtn.onclick = () => model.setGravity(model.gravity + 10);
-        this.spawnDecBtn.onclick = () => model.setSpawnRate(Math.max(0, model.spawnPerSecond - 1));
-        this.spawnIncBtn.onclick = () => model.setSpawnRate(model.spawnPerSecond + 1);
+        this.gravityValue = model.gravity;
+        this.spawnValue = model.spawnPerSecond;
+        this.gravityEl.value = this.gravityValue.toFixed(0);
+        this.spawnEl.value = this.spawnValue.toFixed(1);
+
+        const { count, area } = shapes.getStats();
+        this.update(count, area);
+
+        this.gravityDecBtn.onclick = () =>
+            eventBus.emit("hud:request:setGravity", Math.max(50, this.gravityValue - 10));
+        this.gravityIncBtn.onclick = () =>
+            eventBus.emit("hud:request:setGravity", this.gravityValue + 10);
+        this.spawnDecBtn.onclick = () =>
+            eventBus.emit("hud:request:setSpawnRate", Math.max(0, this.spawnValue - 1));
+        this.spawnIncBtn.onclick = () =>
+            eventBus.emit("hud:request:setSpawnRate", this.spawnValue + 1);
     }
 }

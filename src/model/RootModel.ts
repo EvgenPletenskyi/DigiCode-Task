@@ -1,4 +1,4 @@
-import { EventEmitter } from "@/app/EventEmitter";
+import { eventBus } from "@/app/EventEmitter";
 
 export class RootModel {
     baseWidth = 960;
@@ -15,21 +15,18 @@ export class RootModel {
     maxGravity = 500;
     spawnPerSecond = 5;
 
-    readonly onGravityChanged = new EventEmitter<number>();
-    readonly onSpawnRateChanged = new EventEmitter<number>();
-
     setGravity(value: number): void {
         const clamped = Math.min(this.maxGravity, Math.max(0, value));
         this.gravity = clamped;
-        this.onGravityChanged.emit(clamped);
+        eventBus.emit("model:gravityChanged", clamped);
     }
 
     setSpawnRate(value: number): void {
         this.spawnPerSecond = value;
-        this.onSpawnRateChanged.emit(value);
+        eventBus.emit("model:spawnRateChanged", value);
     }
 
-    setScale(scale: number) {
+    setScale(scale: number): void {
         this.scale = scale;
         this.cssWidth = Math.round(this.baseWidth * scale);
         this.cssHeight = Math.round(this.baseHeight * scale);

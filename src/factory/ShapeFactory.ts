@@ -34,7 +34,6 @@ export class ShapeFactory {
             y: 0,
             radius: finalRadius,
             color: finalColor,
-            onScreen: false,
             spawnOffset: 0,
         };
 
