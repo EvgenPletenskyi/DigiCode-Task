@@ -82,6 +82,32 @@ export class ShapeController {
         this.emitStats();
     }
 
+    addShapeAt(x: number, y: number): void {
+        const type = this.factory.pickRandomType();
+        let e = this.pool.tryObtain(type) ?? this.factory.create(type);
+
+        e.model.radius = ShapeModelUtils.getRandomRadius();
+        e.model.color = ShapeModelUtils.getRandomColor();
+
+        if (e.model.type === "ellipse") {
+            const ratio = 0.6 + Math.random() * 0.6;
+            e.model.ry = Math.max(1, Math.round(e.model.radius * ratio));
+        }
+
+        e.model.x = x;
+        e.model.y = y;
+        e.model.onScreen = true;
+
+        e.view.setPosition(x, y);
+        e.view.refreshAppearance();
+        e.view.visible = true;
+
+        this.wireInteractions(e);
+        this.active.push(e);
+        this.app.stage.addChild(e.view);
+        this.onStatsChanged.emit(this.getStats());
+    }
+
     update(dt: number): void {
         // const g = this.model.gravity;
         // const H = this.model.baseHeight;

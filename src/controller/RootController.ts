@@ -21,12 +21,24 @@ export class RootController {
         if (this.running) return;
         this.running = true;
         this.app.ticker.add(this.onTick);
+        this.initInteractions();
     }
 
     stop() {
         if (!this.running) return;
         this.running = false;
         this.app.ticker.remove(this.onTick);
+    }
+
+    private initInteractions(): void {
+        this.app.stage.hitArea = this.app.screen;
+
+        this.app.stage.on("pointerdown", (event) => {
+            console.log("CLICK!", event.global.x, event.global.y);
+            if (event.target === this.app.stage) {
+                this.shapes.addShapeAt(event.global.x, event.global.y);
+            }
+        });
     }
 
     private onTick = (ticker: any) => {
